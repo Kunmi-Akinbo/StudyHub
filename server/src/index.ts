@@ -3,6 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
+import authRoutes from './routes/auth';
 
 dotenv.config();
 
@@ -16,6 +17,8 @@ app.use(morgan('combined'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use('/api/auth', authRoutes);
+
 app.get('/health', (req, res) => {
   res.json({ 
     status: 'OK', 
@@ -23,7 +26,6 @@ app.get('/health', (req, res) => {
   });
 });
 
-// error handler
 app.use('*', (req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
