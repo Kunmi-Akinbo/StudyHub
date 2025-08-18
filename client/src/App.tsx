@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { healthCheck } from './services/api';
+import Timer from './components/Timer';
 
 function App() {
   const [backendStatus, setBackendStatus] = useState('Checking...');
@@ -19,8 +20,9 @@ function App() {
   return (
     <div className="App">
       <h1>StudyHub</h1>
-      <p>Frontend is running</p>
       <p>Backend status: {backendStatus}</p>
+      <hr />
+      <Timer />
     </div>
   );
 }
