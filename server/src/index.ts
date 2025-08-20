@@ -4,11 +4,20 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
 import authRoutes from './routes/auth';
+import db from './config/database';
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+db.raw('SELECT 1')
+  .then(() => {
+    console.log('Database connected successfully');
+  })
+  .catch((error) => {
+    console.log('Database connection unsuccessful:', error.message);
+  });
 
 // middleware
 app.use(helmet());
