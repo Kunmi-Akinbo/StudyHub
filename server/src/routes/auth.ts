@@ -66,7 +66,40 @@ router.post('/login', [
     return res.status(400).json({ errors: errors.array() });
   }
 
-  res.json({ message: 'Login endpoint ready', data: req.body });
+  try {
+    const { email, password } = req.body;
+    const user = await UserModel.findByEmail(email);
+    if (!user) {
+      return res.status(401).json({ error: 'Invalid email or password' });
+    }
+    const isPasswordValid = await bcrypt.compare(password, user.password_hash);
+    if (!isPasswordValid) {
+      return res.status(401).json({ error: 'Invalid email or password' });
+    }
+    const jwtSecret = process.env.JWT_SECRET || 'development-secret';
+    const token = jwt.sign(
+      { 
+        userId: user.id, 
+        email: user.email 
+      },
+      jwtSecret
+    );
+    res.json({
+      message: 'Login successful',
+      token,
+      user: {
+        id: user.id,
+        email: user.email,
+        firstName: user.first_name,
+        lastName: user.last_name
+      }
+    });
+
+  } 
+  catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 });
 
 export default router;
