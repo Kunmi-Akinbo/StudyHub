@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { healthCheck } from './services/api';
 import Timer from './components/Timer';
+import AuthForm from './components/AuthForm';
 
 function App() {
   const [backendStatus, setBackendStatus] = useState('Checking...');
@@ -21,6 +22,8 @@ function App() {
     <div className="App">
       <h1>StudyHub</h1>
       <p>Backend status: {backendStatus}</p>
+      <hr />
+      <AuthForm />
       <hr />
       <Timer />
     </div>
