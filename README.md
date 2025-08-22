@@ -8,7 +8,7 @@ StudyHub is a modern study management platform designed to help students improve
 
 ## Features
 
-* **Pomodoro Timer**: Customizable work/break intervals (25/5/15 minutes) with audio notifications and session tracking
+* **Study Timer**: Customizable work/break intervals (25/5/15 minutes) with audio notifications and session tracking
 * **Study Session Management**: Automatic logging of study sessions with duration tracking and productivity metrics
 * **Note-Taking System**: Create, edit, and organize study notes with search functionality and category organization
 * **Progress Analytics**: Visual dashboard showing study patterns, session statistics, and weekly/monthly summaries
