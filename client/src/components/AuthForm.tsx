@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { loginUser, registerUser } from '../services/api';
 
 interface AuthFormProps {}
 
@@ -11,17 +12,33 @@ const AuthForm: React.FC<AuthFormProps> = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setLoading(true);
-
-    console.log('Form submitted:', { email, password, firstName, lastName });
-    
-    setTimeout(() => {
+  
+    try {
+      if (isLogin) {
+        const response = await loginUser({ email, password });
+        console.log('Login successful:', response);
+      } 
+      else {
+        const response = await registerUser({ 
+          email, 
+          password, 
+          firstName, 
+          lastName 
+        });
+        console.log('Registration successful:', response);
+      }
+    } 
+    catch (error: any) {
+      console.error('Auth error:', error);
+      setError(error.response?.data?.error || 'Authentication failed');
+    } 
+    finally {
       setLoading(false);
-      console.log('Form submission complete');
-    }, 1000);
+    }
   };
 
   const toggleMode = () => {
