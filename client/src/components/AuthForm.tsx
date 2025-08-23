@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { loginUser, registerUser } from '../services/api';
+import { useAuth } from '../context/AuthContext';
 
 interface AuthFormProps {}
 
@@ -11,6 +12,7 @@ const AuthForm: React.FC<AuthFormProps> = () => {
   const [lastName, setLastName] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const { login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,6 +31,7 @@ const AuthForm: React.FC<AuthFormProps> = () => {
           firstName, 
           lastName 
         });
+        login(response.token, response.user);
         console.log('Registration successful:', response);
       }
     } 
