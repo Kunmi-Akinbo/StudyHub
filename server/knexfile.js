@@ -1,11 +1,11 @@
 module.exports = {
     development: {
       client: 'pg',
-      connection: process.env.DATABASE_URL || {
+      connection: {
         host: 'localhost',
         database: 'studyhub_dev',
         user: 'postgres',
-        password: 'password'
+        password: 'astrothunder'
       },
       migrations: {
         directory: './database/migrations'
