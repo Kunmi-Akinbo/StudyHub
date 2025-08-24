@@ -32,4 +32,42 @@ export const loginUser = async (credentials: {
   return response.data;
 };
 
+export const createStudySession = async (sessionData: {
+  session_type: 'work' | 'break';
+  duration_minutes: number;
+  notes?: string;
+}) => {
+  const token = localStorage.getItem('authToken');
+  const response = await api.post('/api/sessions', sessionData, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+  return response.data;
+};
+
+export const updateStudySession = async (sessionId: number, updates: {
+  actual_duration_seconds?: number;
+  completed?: boolean;
+  notes?: string;
+}) => {
+  const token = localStorage.getItem('authToken');
+  const response = await api.put(`/api/sessions/${sessionId}`, updates, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+  return response.data;
+};
+
+export const getUserSessions = async () => {
+  const token = localStorage.getItem('authToken');
+  const response = await api.get('/api/sessions', {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+  return response.data;
+};
+
 export default api;
