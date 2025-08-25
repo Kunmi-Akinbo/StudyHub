@@ -11,8 +11,9 @@ const Timer: React.FC<TimerProps> = () => {
   const [isActive, setActive] = useState(false);
   const [currentSessionId, setCurrentSessionId] = useState<number | null>(null);
   const [startTime, setStartTime] = useState<Date | null>(null);
+  const [sessionStatus, setSessionStatus] = useState<string>('');
   
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
 
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
@@ -58,6 +59,9 @@ const Timer: React.FC<TimerProps> = () => {
       setCurrentSessionId(null);
       setStartTime(null);
     }
+    else if (!isAuthenticated) {
+      setSessionStatus('Session completed (not saved - login to track progress)');
+    }
   };
 
   const switchMode = (mode: 'work' | 'break') => {
@@ -66,6 +70,7 @@ const Timer: React.FC<TimerProps> = () => {
     }
     setTimerType(mode);
     setActive(false);
+    setSessionStatus('');
     if (mode === 'work') {
       setMinutes(25);
       setSeconds(0);
@@ -86,11 +91,21 @@ const Timer: React.FC<TimerProps> = () => {
           duration_minutes: timerType === 'work' ? 25 : 5
         });
         setCurrentSessionId(response.session.id);
+        if (timerType === 'work') {
+          setSessionStatus('Work session and tracking started');
+        } 
+        else {
+          setSessionStatus('Break session and tracking started');
+        }
         console.log('Study session started:', response.session);
       } 
       catch (error) {
+        setSessionStatus('Error starting session ');
         console.error('Failed to create session:', error);
       }
+    }
+    else {
+      setSessionStatus('Timer started (not tracked - login to save sessions)');
     }
   };
 
@@ -103,11 +118,16 @@ const Timer: React.FC<TimerProps> = () => {
           actual_duration_seconds: actualDuration,
           completed: false
         });
+        setSessionStatus('Session paused and saved');
         console.log('Session paused and saved');
       } 
       catch (error) {
+        setSessionStatus('Error saving session');
         console.error('Failed to update session:', error);
       }
+    }
+    else if (!isAuthenticated) {
+      setSessionStatus('Timer paused (not saved)');
     }
   };
 
@@ -115,6 +135,7 @@ const Timer: React.FC<TimerProps> = () => {
     setActive(false);
     setCurrentSessionId(null);
     setStartTime(null);
+    setSessionStatus('');
     if (timerType === 'work') {
       setMinutes(25);
       setSeconds(0);
@@ -231,6 +252,44 @@ const Timer: React.FC<TimerProps> = () => {
   return (
     <div style={{ textAlign: 'center', padding: '20px' }}>
       <h2>Timer</h2>
+      {!isAuthenticated && (
+        <div style={{ 
+          backgroundColor: '#fff3cd', 
+          color: '#856404', 
+          padding: '10px', 
+          borderRadius: '5px', 
+          marginBottom: '20px',
+          border: '1px solid #ffeaa7'
+        }}>
+          Login to save and track your study sessions
+        </div>
+      )}
+
+      {isAuthenticated && user && (
+        <div style={{ 
+          backgroundColor: '#d4edda', 
+          color: '#155724', 
+          padding: '10px', 
+          borderRadius: '5px', 
+          marginBottom: '20px',
+          border: '1px solid #c3e6cb'
+        }}>
+          Welcome {user.firstName}. Your sessions are being tracked.
+        </div>
+      )}
+
+      {sessionStatus && (
+        <div style={{ 
+          backgroundColor: '#e2e3e5', 
+          color: '#383d41', 
+          padding: '8px', 
+          borderRadius: '5px', 
+          marginBottom: '15px',
+          fontSize: '14px'
+        }}>
+          {sessionStatus}
+        </div>
+      )}
         <div style={{ marginBottom: '20px' }}>
         <button 
           onClick={() => switchMode('work')}
